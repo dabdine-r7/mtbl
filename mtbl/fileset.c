@@ -179,6 +179,31 @@ fs_reinit_merger(struct mtbl_fileset *f)
 		mtbl_merger_add_source(f->merger, mtbl_reader_source(reader));
 }
 
+#ifdef __MACH__
+#include <mach/mach_time.h>
+#define ORWL_NANO (+1.0E-9)
+#define ORWL_GIGA UINT64_C(1000000000)
+
+static double orwl_timebase = 0.0;
+static uint64_t orwl_timestart = 0;
+
+struct timespec orwl_gettime(void) {
+  // be more careful in a multithreaded environement
+  if (!orwl_timestart) {
+    mach_timebase_info_data_t tb = { 0 };
+    mach_timebase_info(&tb);
+    orwl_timebase = tb.numer;
+    orwl_timebase /= tb.denom;
+    orwl_timestart = mach_absolute_time();
+  }
+  struct timespec t;
+  double diff = (mach_absolute_time() - orwl_timestart) * orwl_timebase;
+  t.tv_sec = diff * ORWL_NANO;
+  t.tv_nsec = diff - (t.tv_sec * ORWL_GIGA);
+  return t;
+}
+#endif
+
 void
 mtbl_fileset_reload(struct mtbl_fileset *f)
 {
@@ -186,8 +211,12 @@ mtbl_fileset_reload(struct mtbl_fileset *f)
 	struct timespec now;
 	int res;
 
+   #ifdef __MACH__
+   now = orwl_gettime();
+   #else
 	res = clock_gettime(CLOCK_MONOTONIC, &now);
 	assert(res == 0);
+   #endif
 
 	if (now.tv_sec - f->last.tv_sec > f->reload_interval) {
 		f->n_loaded = 0;
@@ -207,8 +236,12 @@ mtbl_fileset_reload_now(struct mtbl_fileset *f)
 	struct timespec now;
 	int res;
 
-	res = clock_gettime(CLOCK_MONOTONIC, &now);
+   #ifdef __MACH__
+   now = orwl_gettime();
+   #else
+	now = clock_gettime(CLOCK_MONOTONIC, &now);
 	assert(res == 0);
+   #endif
 
 	f->n_loaded = 0;
 	f->n_unloaded = 0;
@@ -218,3 +251,4 @@ mtbl_fileset_reload_now(struct mtbl_fileset *f)
 		fs_reinit_merger(f);
 	f->last = now;
 }
+
