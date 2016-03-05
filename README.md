@@ -48,3 +48,15 @@ sorted order. Since `mtbl` does not allow duplicate keys in an SSTable file,
 both the sorter and merger interfaces require a caller-provided merge function
 which will be called to merge multiple values for the same key. These interfaces
 also make use of sequential I/O operations only.
+
+MacOSX
+-------
+To build on a mac:
+
+```
+./autogen.sh
+CPPFLAGS="-I/usr/local/include -L/usr/local/lib" ./configure
+make
+make install
+```
+
