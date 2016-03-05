@@ -55,7 +55,7 @@ To build on a mac:
 
 ```
 ./autogen.sh
-CPPFLAGS="-I/usr/local/include -L/usr/local/lib" ./configure
+CFLAGS="-I/usr/local/include" LDFLAGS="-L/usr/local/lib" ./configure
 make
 make install
 ```
