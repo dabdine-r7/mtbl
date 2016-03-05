@@ -54,6 +54,7 @@ MacOSX
 To build on a mac:
 
 ```
+brew install snappy lz4 # may need to upgrade. mtbl requires lz4 > v129
 ./autogen.sh
 CFLAGS="-I/usr/local/include" LDFLAGS="-L/usr/local/lib" ./configure
 make
