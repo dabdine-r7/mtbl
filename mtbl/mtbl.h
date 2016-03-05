@@ -304,6 +304,9 @@ mtbl_fileset_init(const char *fname, const struct mtbl_fileset_options *);
 void
 mtbl_fileset_destroy(struct mtbl_fileset **);
 
+struct timespec 
+orwl_gettime(void);
+
 void
 mtbl_fileset_reload(struct mtbl_fileset *);
 

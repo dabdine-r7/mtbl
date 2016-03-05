@@ -209,11 +209,11 @@ mtbl_fileset_reload(struct mtbl_fileset *f)
 {
 	assert(f != NULL);
 	struct timespec now;
-	int res;
 
    #ifdef __MACH__
    now = orwl_gettime();
    #else
+	int res;
 	res = clock_gettime(CLOCK_MONOTONIC, &now);
 	assert(res == 0);
    #endif
@@ -234,11 +234,11 @@ mtbl_fileset_reload_now(struct mtbl_fileset *f)
 {
 	assert(f != NULL);
 	struct timespec now;
-	int res;
 
    #ifdef __MACH__
    now = orwl_gettime();
    #else
+	int res;
 	now = clock_gettime(CLOCK_MONOTONIC, &now);
 	assert(res == 0);
    #endif
